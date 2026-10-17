@@ -1,0 +1,50 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "core_regression_tests": 13,
+  "gui_smoke": {
+    "passed": true,
+    "window": "1040x790",
+    "start_button_visible": true,
+    "file_import_verified": true
+  },
+  "native_edge_tests": [
+    {
+      "fixture": "basic.c",
+      "exact_match": true
+    },
+    {
+      "fixture": "escapes.c",
+      "exact_match": true
+    },
+    {
+      "restored_original": true,
+      "characters": 778
+    }
+  ],
+  "packaged_app_input": {
+    "passed": true,
+    "application": "PTA Code Typer.app",
+    "browser": "Microsoft Edge",
+    "file_import": {
+      "fixture": "basic.c",
+      "characters": 171,
+      "exact_match": true
+    },
+    "clipboard_import": {
+      "fixture": "escapes.c",
+      "characters": 171,
+      "exact_match": true
+    },
+    "first_attempt_both": true,
+    "permission_reassociation_verified": true,
+    "after_test_editor_restored_exactly": true,
+    "restored_characters": 778
+  },
+  "other_browsers": "Recognition implemented; no live verification yet.",
+  "no_submission": true,
+  "original_files": {
+    "files_checked": 25,
+    "changed": []
+  }
+}
