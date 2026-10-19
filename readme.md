@@ -18,9 +18,9 @@ macOS 版采用 **SwiftUI 与 Apple Liquid Glass**，通过内置 Python 组件�
 
 | 平台 | 当前应用版本 | 系统要求 | 下载文件 |
 | --- | --- | --- | --- |
-| macOS | v0.2.0 预发布 | Apple Silicon，macOS 26+ | `PTA-Code-Typer-v0.2.0-macOS-arm64-prerelease.zip` |
-| Windows | v0.1.2 预发布 | Windows 11，x64 | `PTA-Code-Typer-0.1.2-windows-x64.msi` |
-| Windows 便携版 | v0.1.2 预发布 | Windows 11，x64 | `PTA-Code-Typer-0.1.2-windows-x64-portable.zip` |
+| macOS | v0.2.0 正式发布 | Apple Silicon，macOS 26+ | `PTA-Code-Typer-v0.2.0-macOS-arm64-prerelease.zip` |
+| Windows | v0.1.2 正式发布 | Windows 11，x64 | `PTA-Code-Typer-0.1.2-windows-x64.msi` |
+| Windows 便携版 | v0.1.2 正式发布 | Windows 11，x64 | `PTA-Code-Typer-0.1.2-windows-x64-portable.zip` |
 
 两端均提供 Microsoft Edge、Google Chrome 适配；macOS 还提供 Safari 适配。浏览器和网页编辑器更新可能影响行为，遇到问题请反馈系统、浏览器及应用版本。macOS 的 Chrome 适配尚未完成现场实测；Edge、Safari 有既往实测记录。Windows 已由维护者在本机运行，最新 MSI 安装位置选择与快捷方式仍建议在首次安装时核对。
 
