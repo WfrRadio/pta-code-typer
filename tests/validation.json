@@ -1,50 +1,64 @@
 {
+  "version": "0.2.0",
   "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
   "architecture": "arm64",
-  "core_regression_tests": 13,
-  "gui_smoke": {
-    "passed": true,
-    "window": "1040x790",
-    "start_button_visible": true,
-    "file_import_verified": true
+  "core_and_browser_identity_tests": 24,
+  "standalone_script_regressions": 11,
+  "native_edge_tests": {
+    "actual_python3_cli_started_on_terminal": true,
+    "cli_fixture": "basic.c",
+    "app_backend_fixture": "escapes.c",
+    "both_exact_match": true,
+    "foreground_switch_stops": true,
+    "editor_restored_exactly": true,
+    "submitted": false
   },
-  "native_edge_tests": [
-    {
-      "fixture": "basic.c",
-      "exact_match": true
-    },
-    {
-      "fixture": "escapes.c",
-      "exact_match": true
-    },
-    {
-      "restored_original": true,
-      "characters": 778
-    }
-  ],
   "packaged_app_input": {
-    "passed": true,
-    "application": "PTA Code Typer.app",
-    "browser": "Microsoft Edge",
-    "file_import": {
-      "fixture": "basic.c",
-      "characters": 171,
-      "exact_match": true
-    },
-    "clipboard_import": {
-      "fixture": "escapes.c",
-      "characters": 171,
-      "exact_match": true
-    },
-    "first_attempt_both": true,
-    "permission_reassociation_verified": true,
-    "after_test_editor_restored_exactly": true,
-    "restored_characters": 778
+    "status": "passed",
+    "native_app_start_button": true,
+    "host_and_helper_accessibility_allowed": true,
+    "browser": "Safari",
+    "characters": 171,
+    "exact_match": true,
+    "original_restored_exactly": true,
+    "restored_characters": 778,
+    "submitted": false
   },
-  "other_browsers": "Recognition implemented; no live verification yet.",
-  "no_submission": true,
-  "original_files": {
-    "files_checked": 25,
-    "changed": []
+  "other_browsers": "Chrome, Brave and Chromium: identification implemented; no live verification yet.",
+  "legacy_foreground_api": "Uses synchronous public Process Manager APIs, deprecated by Apple but verified on this macOS version.",
+  "original_script": "pta.py deliberately updated for the same two bugs; previous file backed up locally.",
+  "native_safari_tests": {
+    "app_backend_fixture": "basic.c",
+    "actual_python3_cli_fixture": "escapes.c",
+    "both_exact_match": true,
+    "editor_restored_exactly": true,
+    "restored_characters": 778,
+    "submitted": false
+  },
+  "native_bridge_tests": 5,
+  "total_app_tests": 29,
+  "native_ui": {
+    "framework": "SwiftUI",
+    "material": "Liquid Glass",
+    "minimum_macos": "26.0",
+    "build_sdk": "26.5",
+    "swift_compiler": "6.3.3",
+    "tested_os": "26.6.2",
+    "macos27_tested": false,
+    "main_window_layout_verified": true,
+    "file_import_verified": true,
+    "clipboard_import_verified": true,
+    "permissions_page_verified": true,
+    "activity_page_verified": true,
+    "permission_guard_verified": true,
+    "input_worker_python": "3.12.14",
+    "reports_location": "user Application Support"
+  },
+  "frozen_worker_test": {
+    "browser": "Safari",
+    "characters": 171,
+    "exact_match": true,
+    "json_progress_done_finished_received": true,
+    "original_restored_exactly": true
   }
 }

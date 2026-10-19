@@ -27,8 +27,8 @@ GitHub 账户与 Apple Developer 账户无关。
 
 ## 3. 上传源码文件
 
-1. 在 Mac 上解压 `PTA-Code-Typer-v0.1.0-source.zip`。
-2. 打开解压后的 `PTA-Code-Typer-v0.1.0` 文件夹。
+1. 在 Mac 上解压 `PTA-Code-Typer-v0.2.0-source.zip`。
+2. 打开解压后的 `PTA-Code-Typer-v0.2.0` 文件夹。
 3. 在 Finder 按 **Command + Shift + .** 显示隐藏文件，确保能看到 `.gitignore`。
 4. 回到新建的 GitHub 仓库，点击 **uploading an existing file**；已有内容的仓库则点 **Add file → Upload files**。
 5. 拖入该文件夹**内部的文件和子文件夹**，保留子文件夹结构；不要把外层文件夹再套一层，也不要只上传 ZIP。
@@ -46,18 +46,18 @@ GitHub 不会把你上传到源码列表里的 ZIP 自动展开成代码。因�
 ## 4. 创建 Pre-release 草稿
 
 1. 在仓库首页右侧找到 **Releases**，点击 **Create a new release** 或 **Draft a new release**。
-2. 在 **Choose a tag** 输入 `v0.1.0`，选择创建这个新标签。
+2. 在 **Choose a tag** 输入 `v0.2.0`，选择创建这个新标签。
 3. **Target** 选择刚上传源码的默认分支。此后本次发布前先不要再改代码。
-4. **Release title** 填：`PTA Code Typer v0.1.0 — macOS Pre-release`。
-5. **Describe this release**：复制源码包里的 `docs/RELEASE_NOTES_v0.1.0.md` 全文。
+4. **Release title** 填：`PTA Code Typer v0.2.0 — macOS Pre-release`。
+5. **Describe this release**：复制源码包里的 `docs/RELEASE_NOTES_v0.2.0.md` 全文。
 6. 在附件区域上传以下三个文件：
-   - `PTA-Code-Typer-v0.1.0-macOS-arm64-prerelease.zip`
-   - `PTA-Code-Typer-v0.1.0-source.zip`
+   - `PTA-Code-Typer-v0.2.0-macOS-arm64-prerelease.zip`
+   - `PTA-Code-Typer-v0.2.0-source.zip`
    - `SHA256SUMS.txt`
 7. 勾选 **This is a pre-release**。这表示它是公开测试版本。
 8. 可以先点 **Save draft** 检查；确认无误后点 **Publish release**。
 
-`v0.1.0` 标签标记本次源码版本，Pre-release 是该 Release 的测试状态。GitHub 额外生成的 `Source code (zip)` 和 `Source code (tar.gz)` 也是源码，不是可直接运行的 App。
+`v0.2.0` 标签标记本次源码版本，Pre-release 是该 Release 的测试状态。GitHub 额外生成的 `Source code (zip)` 和 `Source code (tar.gz)` 也是源码，不是可直接运行的 App。
 发布后用户在 Releases 下下载名字含 `macOS-arm64-prerelease` 的附件。
 
 官方说明：https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository
@@ -76,7 +76,7 @@ Apple 官方说明：https://support.apple.com/zh-cn/102445
 
 ## 6. 以后更新
 
-先修改与测试源码，提交至默认分支，再构建新 App，为新版本建立新标签（例如 `v0.1.1`），
+先修改与测试源码，提交至默认分支，再构建新 App，为新版本建立新标签（例如 `v0.2.0`），
 发布对应新 ZIP 与校验文件。不要把不同代码重复标为同一个已发布版本。
 当前 App 没有自动更新，用户需要下载新版本。临时签名变化时可能需要重新关联辅助功能权限。
 

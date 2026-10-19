@@ -1,12 +1,7 @@
 #!/bin/zsh
 APP_ROOT="${0:A:h}"
-APP_PYTHON="$APP_ROOT/.venv/bin/python"
-if [[ ! -x "$APP_PYTHON" ]]; then
-  APP_PYTHON="$(command -v python3)"
+if [[ -d "$APP_ROOT/dist/PTA Code Typer.app" ]]; then
+  /usr/bin/open "$APP_ROOT/dist/PTA Code Typer.app"
+else
+  /usr/bin/osascript -e 'display alert "请先构建原生 App" message "源码版需要 macOS 26+ SDK、Swift 编译器和 Python 构建环境，请按 readme.md 的命令构建。下载发布版可直接打开 .app，无需安装这些工具。"'
 fi
-if [[ -z "$APP_PYTHON" ]] || ! "$APP_PYTHON" -B -c 'import tkinter; tkinter.Tcl()' >/dev/null 2>&1; then
-  /usr/bin/osascript -e 'display alert "缺少 Python 图形环境" message "请优先打开 dist 中的 .app，内置环境无需配置。源码运行需要 Python 3.11+ 和可用的 tkinter，详见 readme.md。"'
-  exit 1
-fi
-cd "$APP_ROOT" || exit 1
-exec "$APP_PYTHON" -B "$APP_ROOT/main.py"

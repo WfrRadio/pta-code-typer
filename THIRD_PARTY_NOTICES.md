@@ -1,34 +1,23 @@
 # Third-party components
 
-PTA Code Typer source code and its generated bracket icon are distributed under
-the MIT License in `LICENSE`. Third-party components retain their own licenses.
+PTA Code Typer source code and its generated bracket icon use the MIT License in `LICENSE`. Third-party components retain their own licenses.
 
-The macOS v0.1.0 arm64 executable includes:
+The native macOS v0.2.0 arm64 executable includes:
 
 | Component | Version | License text |
 | --- | --- | --- |
-| CPython and bundled standard library | 3.12.14 | `licenses/Python-3.12-LICENSE.txt` |
-| Tcl | 9.0.4 | `licenses/Tcl-9.0.4-license.terms` |
-| Tk | 9.0.4 | `licenses/Tk-9.0.4-license.terms` |
-| PyInstaller bootloader and embedded loader/runtime hooks | 6.22.3 | `licenses/PyInstaller-COPYING.txt` |
+| CPython and its bundled standard library, in the private worker | 3.12.14 | `licenses/Python-3.12-LICENSE.txt` |
+| PyInstaller bootloader and embedded runtime hooks | 6.22.3 | `licenses/PyInstaller-COPYING.txt` |
 
-PyInstaller's copying terms include its bootloader exception and the licensing
-terms for embedded runtime hooks. The full upstream file is included unchanged.
-PyInstaller itself is a build dependency; end users do not need to install it.
-The build tool's other dependencies are not shipped as a Python development
-environment in either archive.
+The full PyInstaller terms include its bootloader exception and runtime-hook licenses. The files are included unchanged from the installed build dependencies.
+
+SwiftUI, AppKit, Swift runtime libraries, SF Symbols, and system frameworks are loaded from macOS and are not separately redistributed in this archive. The native app does not bundle Tcl or Tk. The source retains an optional legacy Tk interface; Tcl/Tk 9.0.4 license texts are preserved in `licenses/` for reference to the older build and that optional interface.
 
 Upstream references:
 
 - Python: https://www.python.org/ and https://docs.python.org/3/license.html
-- Tcl 9.0.4: https://github.com/tcltk/tcl/tree/core-9-0-4
-- Tk 9.0.4: https://github.com/tcltk/tk/tree/core-9-0-4
 - PyInstaller: https://github.com/pyinstaller/pyinstaller/tree/v6.22.3
+- Tcl: https://github.com/tcltk/tcl/tree/core-9-0-4
+- Tk: https://github.com/tcltk/tk/tree/core-9-0-4
 
-Python and PyInstaller license files were copied from the installed versions
-used for this build. Tcl/Tk license files were obtained from the version tags
-above. Original notices in the bundled files remain intact. macOS frameworks
-and system libraries are loaded from the operating system and are not bundled.
-
-For future builds with different runtime versions, review and update this list
-and its accompanying license texts before distributing the result.
+Review this list and accompanying notices when changing bundled runtime versions.

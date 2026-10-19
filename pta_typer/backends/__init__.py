@@ -4,7 +4,7 @@ from ..core import Stopped
 
 BROWSERS = {
     'auto': '自动识别', 'edge': 'Microsoft Edge', 'chrome': 'Google Chrome',
-    'brave': 'Brave', 'chromium': 'Chromium',
+    'brave': 'Brave', 'chromium': 'Chromium', 'safari': 'Safari',
 }
 
 

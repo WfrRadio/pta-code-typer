@@ -163,10 +163,10 @@ class App:
         self.refresh_button = ttk.Button(row, text='重新检测', command=self.refresh_environment)
         self.refresh_button.pack(side='left', padx=10)
         ttk.Label(page, text='首次识别浏览器', style='Heading.TLabel').pack(anchor='w')
-        ttk.Label(page, text='macOS 可能询问是否允许本应用控制 Edge 或 Chrome，用于读取当前标签页网址。允许后再试即可。\n应用不会注入网页脚本，不需要屏幕录制权限，也不会提交答案。',
+        ttk.Label(page, text='macOS 可能询问是否允许本应用控制 Edge、Chrome 或 Safari，用于读取当前标签页网址。允许后再试即可。\n应用不会注入网页脚本，不需要屏幕录制权限，也不会提交答案。',
                   style='CardMuted.TLabel', wraplength=850, justify='left').pack(anchor='w', pady=(10, 22))
         ttk.Label(page, text='浏览器范围', style='Heading.TLabel').pack(anchor='w')
-        ttk.Label(page, text='已加入 Edge、Chrome、Brave、Chromium 识别。具体兼容性以 README 的实测记录为准。\n仅向 pintia.cn 页面中可编辑的多行代码框输入；切换应用或焦点时会停止。',
+        ttk.Label(page, text='已加入 Edge、Safari、Chrome、Brave、Chromium 识别。具体兼容性以 README 的实测记录为准。\n仅向 pintia.cn 页面中可编辑的多行代码框输入；切换应用或焦点时会停止。',
                   style='CardMuted.TLabel', wraplength=850, justify='left').pack(anchor='w', pady=(10, 0))
 
     def build_log(self):

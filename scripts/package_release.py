@@ -4,22 +4,26 @@ from pathlib import Path
 import hashlib
 import json
 import os
+import plistlib
 import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
 ROOT_FILES = (
     '.gitignore', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'readme.md',
-    'main.py', 'requirements-build.txt', '打开应用.command', '源码启动.command',
+    'main.py', 'native_engine.py', 'requirements-build.txt', '打开应用.command', '源码启动.command',
 )
 # Only these directories and file types enter the public source archive.
 SOURCE_DIRS = {
     'pta_typer': {'.py'}, 'tests': {'.py', '.c', '.json'},
     'scripts': {'.py', '.plist'}, 'assets': {'.png', '.icns'},
     'docs': {'.md'}, 'licenses': {'.txt', '.terms'},
+    'standalone': {'.py'},
+    'native': {'.swift'},
 }
 FORBIDDEN_PARTS = {'.git', '.venv', '__pycache__', 'data', 'build', 'dist', 'release'}
 
@@ -63,24 +67,26 @@ def main():
         raise SystemExit('Run on macOS after building and testing the .app.')
     version_text = (ROOT / 'pta_typer/__init__.py').read_text()
     version = re.search(r"__version__ = '([^']+)'", version_text).group(1)
-    if version != '0.1.0':
+    if version != '0.2.0':
         raise SystemExit('Update the versioned docs and runtime notices before packaging another version.')
     tag = f'v{version}'
     app = ROOT / 'dist/PTA Code Typer.app'
-    binary = app / 'Contents/MacOS/PTA Code Typer'
+    info = plistlib.loads((app/'Contents/Info.plist').read_bytes())
+    if info.get('CFBundleShortVersionString') != version:
+        raise SystemExit('Build the matching application version before packaging.')
+    binary = app / 'Contents/MacOS' / info['CFBundleExecutable']
     architectures = subprocess.check_output(['/usr/bin/lipo', '-archs', str(binary)], text=True).strip()
     if architectures != 'arm64':
         raise SystemExit('This release recipe and its install notes cover arm64 only.')
     subprocess.run(['/usr/bin/codesign', '--verify', '--deep', '--strict', str(app)], check=True)
-    output = ROOT / 'release'
+    output = ROOT / 'release' / tag
     source_name = f'PTA-Code-Typer-{tag}'
     app_name = f'{source_name}-macOS-arm64'
     source_root = output / 'source' / source_name
-    app_root = output / 'app' / app_name
     source_zip = output / f'{source_name}-source.zip'
     app_zip = output / f'{app_name}-prerelease.zip'
     # Refuse to overwrite a previous reviewable release by accident.
-    if any(p.exists() for p in (source_root, app_root, source_zip, app_zip)):
+    if any(p.exists() for p in (source_root, source_zip, app_zip)):
         raise SystemExit('Release output already exists. Review/move it before packaging again.')
     files = source_files()
     # These markers identify local QA material, not generic upstream license text.
@@ -91,7 +97,6 @@ def main():
                 raise RuntimeError(f'Local content requires review: {path.relative_to(ROOT)}')
     original_app = app_manifest(app)
     source_root.mkdir(parents=True)
-    app_root.mkdir(parents=True)
     for path in files:
         destination = source_root / path.relative_to(ROOT)
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -100,27 +105,31 @@ def main():
         for path in files:
             staged = source_root / path.relative_to(ROOT)
             archive.write(staged, f'{source_name}/{path.relative_to(ROOT).as_posix()}')
-    copied_app = app_root / app.name
-    shutil.copytree(app, copied_app, symlinks=True)
-    assert app_manifest(copied_app) == original_app
-    for name in ('LICENSE', 'THIRD_PARTY_NOTICES.md'):
-        shutil.copy2(ROOT / name, app_root / name)
-    shutil.copytree(ROOT / 'licenses', app_root / 'licenses')
-    shutil.copy2(ROOT / 'docs/INSTALL_MACOS.zh-CN.md', app_root / '安装说明.md')
-    shutil.copy2(ROOT / 'docs/RELEASE_NOTES_v0.1.0.md', app_root / 'RELEASE_NOTES.md')
     build_info = {
         'version': version, 'release_status': 'pre-release',
         'architecture': architectures, 'signing': 'ad-hoc; not notarized',
-        'runtime': {'python': '3.12.14', 'tcl_tk': '9.0.4'},
+        'runtime': {'python': '3.12.14', 'ui': 'SwiftUI / Liquid Glass', 'minimum_macos': '26.0', 'sdk': '26.5'},
         'executable_sha256': digest(binary),
         'app_content_manifest_sha256': hashlib.sha256(json.dumps(original_app, sort_keys=True).encode()).hexdigest(),
         'repackaged_without_rebuilding': True,
     }
-    (app_root / 'BUILD_INFO.json').write_text(json.dumps(build_info, indent=2) + '\n')
-    subprocess.run([
-        '/usr/bin/ditto', '-c', '-k', '--norsrc', '--noextattr', '--noqtn',
-        '--keepParent', str(app_root), str(app_zip),
-    ], check=True)
+    # Keep the app staging copy temporary so only dist contains a runnable app.
+    with tempfile.TemporaryDirectory(prefix='pta-release-app-') as temporary:
+        app_root = Path(temporary) / app_name
+        app_root.mkdir()
+        copied_app = app_root / app.name
+        shutil.copytree(app, copied_app, symlinks=True)
+        assert app_manifest(copied_app) == original_app
+        for name in ('LICENSE', 'THIRD_PARTY_NOTICES.md'):
+            shutil.copy2(ROOT / name, app_root / name)
+        shutil.copytree(ROOT / 'licenses', app_root / 'licenses')
+        shutil.copy2(ROOT / 'docs/INSTALL_MACOS.zh-CN.md', app_root / '安装说明.md')
+        shutil.copy2(ROOT / f'docs/RELEASE_NOTES_{tag}.md', app_root / 'RELEASE_NOTES.md')
+        (app_root / 'BUILD_INFO.json').write_text(json.dumps(build_info, indent=2) + '\n')
+        subprocess.run([
+            '/usr/bin/ditto', '-c', '-k', '--norsrc', '--noextattr', '--noqtn',
+            '--keepParent', str(app_root), str(app_zip),
+        ], check=True)
     checksums = ''.join(f'{digest(path)}  {path.name}\n' for path in (source_zip, app_zip))
     (output / 'SHA256SUMS.txt').write_text(checksums)
     manifest = {

@@ -6,11 +6,25 @@ from pathlib import Path
 from ..core import ClipboardReader, Cancelled, Stopped, is_pta_url
 
 CATALOG = {
-    'edge': ('Microsoft Edge', 'com.microsoft.edgemac', 'Microsoft Edge.app'),
-    'chrome': ('Google Chrome', 'com.google.Chrome', 'Google Chrome.app'),
-    'brave': ('Brave', 'com.brave.Browser', 'Brave Browser.app'),
-    'chromium': ('Chromium', 'org.chromium.Chromium', 'Chromium.app'),
+    'edge': ('Microsoft Edge', 'com.microsoft.edgemac'),
+    'chrome': ('Google Chrome', 'com.google.Chrome'),
+    'brave': ('Brave', 'com.brave.Browser'),
+    'chromium': ('Chromium', 'org.chromium.Chromium'),
+    'safari': ('Safari', 'com.apple.Safari'),
 }
+
+
+class ProcessSerialNumber(C.Structure):
+    _fields_ = [('high', C.c_uint32), ('low', C.c_uint32)]
+
+
+def browser_url_script(browser):
+    if browser not in CATALOG:
+        raise Stopped('不支持的浏览器，未读取标签页或执行输入。')
+    bundle = CATALOG[browser][1]
+    # Safari's own scripting dictionary calls this "current tab".
+    tab = 'current tab' if browser == 'safari' else 'active tab'
+    return f'tell application id "{bundle}" to get URL of {tab} of front window'
 
 
 def permission_status():
@@ -61,21 +75,21 @@ class MacKeyboard(ClipboardReader):
         self.cf = C.CDLL('/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation')
         self.cg = C.CDLL('/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics')
         self.ax = C.CDLL('/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices')
-        self.proc = C.CDLL('/usr/lib/libproc.dylib')
         C.CDLL('/System/Library/Frameworks/AppKit.framework/AppKit')
         self.objc = C.CDLL('/usr/lib/libobjc.A.dylib')
         self._bind(self.objc, 'objc_getClass', C.c_void_p, C.c_char_p)
         self._bind(self.objc, 'sel_registerName', C.c_void_p, C.c_char_p)
         self.message = C.CFUNCTYPE(C.c_void_p, C.c_void_p, C.c_void_p)(('objc_msgSend', self.objc))
-        self.pid_message = C.CFUNCTYPE(C.c_int, C.c_void_p, C.c_void_p)(('objc_msgSend', self.objc))
+        self.application_for_pid = C.CFUNCTYPE(C.c_void_p, C.c_void_p, C.c_void_p, C.c_int)(('objc_msgSend', self.objc))
         self.pool = self.message(self.objc.objc_getClass(b'NSAutoreleasePool'), self.selector('new'))
-        self.workspace = self.message(self.objc.objc_getClass(b'NSWorkspace'), self.selector('sharedWorkspace'))
         self._bind(self.cf, 'CFRelease', None, C.c_void_p)
         self._bind(self.cf, 'CFEqual', C.c_bool, C.c_void_p, C.c_void_p)
         self._bind(self.cf, 'CFStringGetLength', C.c_long, C.c_void_p)
         self._bind(self.cf, 'CFStringCreateWithCString', C.c_void_p, C.c_void_p, C.c_char_p, C.c_uint32)
         self._bind(self.cf, 'CFStringGetCString', C.c_bool, C.c_void_p, C.c_char_p, C.c_long, C.c_uint32)
         self._bind(self.ax, 'AXUIElementCreateApplication', C.c_void_p, C.c_int)
+        self._bind(self.ax, 'GetFrontProcess', C.c_int16, C.POINTER(ProcessSerialNumber))
+        self._bind(self.ax, 'GetProcessPID', C.c_int16, C.POINTER(ProcessSerialNumber), C.POINTER(C.c_int))
         self._bind(self.ax, 'AXUIElementCopyAttributeValue', C.c_int, C.c_void_p, C.c_void_p, C.POINTER(C.c_void_p))
         self._bind(self.ax, 'AXUIElementIsAttributeSettable', C.c_int, C.c_void_p, C.c_void_p, C.POINTER(C.c_bool))
         self._bind(self.cg, 'CGEventCreateKeyboardEvent', C.c_void_p, C.c_void_p, C.c_uint16, C.c_bool)
@@ -87,7 +101,6 @@ class MacKeyboard(ClipboardReader):
         class Point(C.Structure):
             _fields_ = [('x', C.c_double), ('y', C.c_double)]
         self._bind(self.cg, 'CGEventGetLocation', Point, C.c_void_p)
-        self._bind(self.proc, 'proc_pidpath', C.c_int, C.c_int, C.c_void_p, C.c_uint32)
         self.application, self.editor, self.target_pid = None, None, None
         self.attributes = {name: self.string(name) for name in ('AXFocusedUIElement', 'AXRole', 'AXValue')}
         self.target_url, self.browser_name = '', ''
@@ -104,10 +117,24 @@ class MacKeyboard(ClipboardReader):
         return self.cf.CFStringCreateWithCString(None, text.encode(), 0x08000100)
 
     def front_pid(self):
-        app = self.message(self.workspace, self.selector('frontmostApplication'))
-        if not app:
+        # NSWorkspace foreground properties need a running main Cocoa loop;
+        # a CLI / Tk worker can otherwise keep the launch-time foreground PID.
+        # These deprecated public APIs are synchronous and tested on macOS 26.
+        serial, pid = ProcessSerialNumber(), C.c_int()
+        if (self.ax.GetFrontProcess(C.byref(serial)) or
+                self.ax.GetProcessPID(C.byref(serial), C.byref(pid)) or pid.value <= 0):
             raise Stopped('无法确认前台应用，已停止。')
-        return self.pid_message(app, self.selector('processIdentifier'))
+        return pid.value
+
+    def bundle_for_pid(self, pid):
+        app = self.application_for_pid(self.objc.objc_getClass(b'NSRunningApplication'),
+                                       self.selector('runningApplicationWithProcessIdentifier:'), pid)
+        if not app:
+            raise Stopped('前台进程已退出或无法识别，未执行输入。')
+        bundle = self.message(app, self.selector('bundleIdentifier'))
+        if not bundle:
+            raise Stopped('无法读取前台应用标识，未执行输入。')
+        return self.cf_text(bundle)
 
     def attribute(self, element, name):
         result = C.c_void_p()
@@ -124,16 +151,15 @@ class MacKeyboard(ClipboardReader):
     def lock_target(self, selected='auto'):
         self.control.check()
         pid = self.front_pid()
-        path = C.create_string_buffer(4096)
-        self.proc.proc_pidpath(pid, path, len(path))
-        found = next(((key, item) for key, item in CATALOG.items() if (item[2] + '/').encode() in path.value), None)
+        bundle = self.bundle_for_pid(pid)
+        found = next(((key, item) for key, item in CATALOG.items() if item[1] == bundle), None)
         if found is None:
-            raise Stopped('前台不是支持的浏览器。请在倒计时内点击 Edge、Chrome、Brave 或 Chromium 的 PTA 代码框。')
-        key, (label, bundle, _) = found
+            raise Stopped(f'前台不是支持的浏览器（检测到 {bundle}，PID {pid}）。请在倒计时内点击 PTA 代码框。')
+        key, (label, bundle) = found
         if selected not in ('auto', key):
             raise Stopped(f'当前前台是 {label}，与选定的浏览器不符。')
         self.browser_name = label
-        script = f'tell application id "{bundle}" to get URL of active tab of front window'
+        script = browser_url_script(key)
         try:
             url = subprocess.run(['/usr/bin/osascript', '-e', script], capture_output=True,
                                  text=True, timeout=12, check=True).stdout.strip()
