@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Platforms>x64</Platforms>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.1.2</Version>
+    <Authors>PTA Code Typer contributors</Authors>
+    <Copyright>Copyright (c) 2026 PTA Code Typer contributors</Copyright>
+  </PropertyGroup>
+</Project>

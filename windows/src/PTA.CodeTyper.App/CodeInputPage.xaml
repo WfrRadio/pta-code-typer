@@ -1,0 +1,160 @@
+<!-- Copyright (c) 2026 PTA Code Typer contributors. -->
+<!-- Licensed under the MIT License. -->
+<Page
+    x:Class="PTA.CodeTyper.App.CodeInputPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PTA.CodeTyper.App">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Top Toolbar -->
+        <CommandBar Grid.Row="0" DefaultLabelPosition="Right" Background="Transparent">
+            <AppBarButton Icon="Paste" Label="读取剪贴板" ToolTipService.ToolTip="读取剪贴板中的代码" Command="{x:Bind ViewModel.LoadClipboardCommand, Mode=OneWay}" />
+            <AppBarButton Icon="OpenFile" Label="导入文件" ToolTipService.ToolTip="导入代码文件 (UTF-8)" Command="{x:Bind ViewModel.ImportFileCommand, Mode=OneWay}" />
+        </CommandBar>
+
+        <!-- Main Content Area: Left code editor, Right settings -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,280" Margin="24,8,24,16" ColumnSpacing="20">
+            <!-- Left: Code Editor Preview -->
+            <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto" RowSpacing="10">
+                <!-- Header: Source name & stats -->
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE8A5;" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="{x:Bind ViewModel.SourceName, Mode=OneWay}" Style="{ThemeResource BodyStrongTextBlockStyle}" MaxLines="1" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.StatsText, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" />
+                </Grid>
+
+                <!-- Code TextBox -->
+                <TextBox Grid.Row="1"
+                    Text="{x:Bind ViewModel.Code, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    AcceptsReturn="True"
+                    TextWrapping="NoWrap"
+                    FontFamily="Cascadia Mono, Consolas, Courier New"
+                    FontSize="13"
+                    PlaceholderText="准备你的代码&#x0a;&#x0a;读取剪贴板，或导入 UTF-8 代码文件。"
+                    IsSpellCheckEnabled="False"
+                    IsTextPredictionEnabled="False"
+                    IsReadOnly="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
+                    CornerRadius="8"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+                <!-- Bottom Hint -->
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE72E;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Text="仅本地处理，完成后由你决定是否提交。" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Right: Settings Panel -->
+            <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="输入设置" Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+                        <!-- Browser Selection -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="浏览器" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <ComboBox ItemsSource="{x:Bind ViewModel.BrowserOptions}"
+                                DisplayMemberPath="Label"
+                                SelectedValuePath="Key"
+                                SelectedValue="{x:Bind ViewModel.Browser, Mode=TwoWay}"
+                                IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                                HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <!-- Delay Selection -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="字符间隔" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <ComboBox ItemsSource="{x:Bind ViewModel.DelayOptions}"
+                                DisplayMemberPath="Label"
+                                SelectedValuePath="Value"
+                                SelectedValue="{x:Bind ViewModel.Delay, Mode=TwoWay}"
+                                IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                                HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <!-- Countdown Selection -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="开始倒计时" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <ComboBox ItemsSource="{x:Bind ViewModel.CountdownOptions}"
+                                DisplayMemberPath="Label"
+                                SelectedValuePath="Value"
+                                SelectedValue="{x:Bind ViewModel.Countdown, Mode=TwoWay}"
+                                IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                                HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <!-- Verification Interval -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="回读校验" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <ComboBox ItemsSource="{x:Bind ViewModel.CheckEveryOptions}"
+                                DisplayMemberPath="Label"
+                                SelectedValuePath="Value"
+                                SelectedValue="{x:Bind ViewModel.CheckEvery, Mode=TwoWay}"
+                                IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                                HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,4" />
+
+                        <!-- Instructions -->
+                        <StackPanel Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE8B7;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock Text="开始前须知" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                            </StackPanel>
+                            <TextBlock Text="1. 切换英文输入法。&#x0a;2. 点击开始后，在倒计时内点击 PTA 作答代码框。&#x0a;3. 原内容会先安全备份，再逐字输入与校验。"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- Bottom Action Bar -->
+        <Border Grid.Row="2" Margin="24,0,24,20" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="12" Padding="16,12">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                <!-- Status Icon -->
+                <FontIcon Grid.Column="0"
+                    Glyph="{x:Bind ViewModel.StatusIcon, Mode=OneWay}"
+                    FontSize="22"
+                    Foreground="{x:Bind ViewModel.StatusBrush, Mode=OneWay}"
+                    VerticalAlignment="Center" />
+
+                <!-- Status Text & Progress -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                    <TextBlock Text="{x:Bind ViewModel.Status, Mode=OneWay}" Style="{ThemeResource BodyStrongTextBlockStyle}" TextTrimming="CharacterEllipsis" MaxLines="2" />
+                    <ProgressBar Maximum="1.0" Minimum="0.0" Value="{x:Bind ViewModel.Progress, Mode=OneWay}" Visibility="{x:Bind ViewModel.BusyVisibility, Mode=OneWay}" Width="260" HorizontalAlignment="Left" />
+                    <TextBlock Text="紧急停止：F8，或鼠标移动至屏幕左上角" Visibility="{x:Bind ViewModel.NotBusyVisibility, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+
+                <!-- Action Button -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Visibility="{x:Bind ViewModel.BusyVisibility, Mode=OneWay}"
+                        Command="{x:Bind ViewModel.CancelCommand, Mode=OneWay}"
+                        MinWidth="100">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE71A;" FontSize="12" />
+                            <TextBlock Text="停止" />
+                        </StackPanel>
+                    </Button>
+                    <Button Visibility="{x:Bind ViewModel.NotBusyVisibility, Mode=OneWay}"
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Command="{x:Bind ViewModel.StartCommand, Mode=OneWay}"
+                        IsEnabled="{x:Bind ViewModel.CanStart, Mode=OneWay}"
+                        MinWidth="110">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE768;" FontSize="12" />
+                            <TextBlock Text="开始输入" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

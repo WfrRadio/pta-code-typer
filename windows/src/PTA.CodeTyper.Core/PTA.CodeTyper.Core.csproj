@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>PTA.CodeTyper.Core</RootNamespace>
+    <AssemblyName>PTA.CodeTyper.Core</AssemblyName>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,95 @@
+<!-- Copyright (c) 2026 PTA Code Typer contributors. -->
+<!-- Licensed under the MIT License. -->
+<Page
+    x:Class="PTA.CodeTyper.App.EnvironmentPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PTA.CodeTyper.App">
+
+    <ScrollViewer Padding="32,24">
+        <StackPanel MaxWidth="720" HorizontalAlignment="Left" Spacing="20">
+            <!-- Header Banner -->
+            <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
+                <FontIcon Glyph="&#xE73E;" FontSize="36" Foreground="{ThemeResource SystemFillColorSuccessBrush}" />
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Windows 本地运行" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="PTA Code Typer 在普通用户权限下运行，无需管理员权限或无障碍特权。" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Card 1: Runtime Info -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="运行状态" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="运行权限" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="普通用户 (asInvoker)" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="界面框架" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="WinUI 3 · Windows App SDK 1.6" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="架构与运行时" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text=".NET 8.0 (win-x64 自包含)" />
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="版本" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="v0.1.0" />
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="紧急停止方式" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="F8 全局热键 / 鼠标移至屏幕左上角" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 2: Supported Browsers -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="支持的浏览器" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE774;" FontSize="14" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                            <TextBlock Text="Microsoft Edge（推荐）" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE774;" FontSize="14" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                            <TextBlock Text="Google Chrome" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                        </StackPanel>
+                        <TextBlock Text="已适配 Windows UI Automation 只读目标识别。输入前会自动核查当前窗口所属进程、当前标签页网址 (pintia.cn) 及作答代码框焦点。"
+                            Style="{ThemeResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 3: Reports & Privacy -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="本地记录与隐私" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                    <TextBlock Text="所有代码备份与校验记录仅保存在本地设备，绝不联网上传代码或题目数据。"
+                        Style="{ThemeResource BodyTextBlockStyle}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" VerticalAlignment="Center">
+                        <TextBox Grid.Column="0" Text="{x:Bind ViewModel.ReportsDirectory, Mode=OneWay}" IsReadOnly="True" />
+                        <Button Grid.Column="1" Command="{x:Bind ViewModel.OpenReportsCommand, Mode=OneWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xED25;" FontSize="14" />
+                                <TextBlock Text="打开文件夹" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 4: Usage Tips -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="使用提示" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                    <TextBlock Text="• 请确保浏览器前台正常显示 pintia.cn 作答页面，且未处于全屏独占或管理员提权状态。" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    <TextBlock Text="• 若遇到中文输入法拦截 Unicode 字符，建议在开始输入前将输入法切换为英文模式（如按 Shift 切换或使用系统英语键盘）。" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                    <TextBlock Text="• 全文校验一致仅代表代码准确输入到作答框中，并不代表解题答案能够正确编译或通过判题测试。" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

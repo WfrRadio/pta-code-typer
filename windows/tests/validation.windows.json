@@ -1,0 +1,180 @@
+{
+  "format_version": 1,
+  "platform": "windows",
+  "description": "Windows validation records for PTA Code Typer. Each test records passed/failed/not-tested.",
+  "tests": {
+    "edge_basic_c": {
+      "status": "not-tested",
+      "browser": "Microsoft Edge",
+      "fixture": "basic.c",
+      "notes": "Requires Windows 11 interactive session with Edge"
+    },
+    "edge_escapes_c": {
+      "status": "not-tested",
+      "browser": "Microsoft Edge",
+      "fixture": "escapes.c",
+      "notes": "Requires Windows 11 interactive session with Edge"
+    },
+    "chrome_basic_c": {
+      "status": "not-tested",
+      "browser": "Google Chrome",
+      "fixture": "basic.c",
+      "notes": "Requires Windows 11 interactive session with Chrome"
+    },
+    "chrome_escapes_c": {
+      "status": "not-tested",
+      "browser": "Google Chrome",
+      "fixture": "escapes.c",
+      "notes": "Requires Windows 11 interactive session with Chrome"
+    },
+    "autocomplete_brackets": {
+      "status": "not-tested",
+      "notes": "Verify () [] {} <> auto-completion cleanup"
+    },
+    "autocomplete_quotes": {
+      "status": "not-tested",
+      "notes": "Verify quote auto-completion cleanup"
+    },
+    "autocomplete_multiline": {
+      "status": "not-tested",
+      "notes": "Verify multi-line brace auto-completion cleanup"
+    },
+    "input_method_english": {
+      "status": "not-tested",
+      "notes": "English keyboard layout"
+    },
+    "input_method_chinese": {
+      "status": "not-tested",
+      "notes": "Chinese IME in English mode"
+    },
+    "wrong_target_address_bar": {
+      "status": "not-tested",
+      "notes": "Should reject address bar"
+    },
+    "wrong_target_non_pta": {
+      "status": "not-tested",
+      "notes": "Should reject non-PTA sites"
+    },
+    "stop_f8": {
+      "status": "not-tested",
+      "notes": "F8 global hotkey stop"
+    },
+    "stop_mouse_corner": {
+      "status": "not-tested",
+      "notes": "Mouse top-left corner stop"
+    },
+    "stop_alt_tab": {
+      "status": "not-tested",
+      "notes": "Alt+Tab window switch stop"
+    },
+    "msi_clean_install": {
+      "status": "not-tested",
+      "notes": "MSI install on clean Windows 11"
+    },
+    "msi_upgrade": {
+      "status": "not-tested",
+      "notes": "MSI upgrade from previous version"
+    },
+    "msi_uninstall": {
+      "status": "not-tested",
+      "notes": "MSI uninstall preserves reports"
+    },
+    "offline_launch": {
+      "status": "not-tested",
+      "notes": "Launch without network"
+    },
+    "dark_theme": {
+      "status": "not-tested",
+      "notes": "Dark theme visual check"
+    },
+    "light_theme": {
+      "status": "not-tested",
+      "notes": "Light theme visual check"
+    },
+    "dpi_150": {
+      "status": "not-tested",
+      "notes": "150% display scaling"
+    },
+    "narrator": {
+      "status": "not-tested",
+      "notes": "Narrator accessibility check"
+    }
+  },
+  "submitted": false,
+  "build_repair_checks": {
+    "date": "2026-10-18",
+    "host": "macOS arm64",
+    "sdk": "8.0.426",
+    "windows_backend_and_test_project_cross_compilation": "passed, 0 warnings / 0 errors",
+    "winui_csharp_api_check": "passed with actual 1.6 references and test-only XAML member stubs; not full XAML build",
+    "powershell_syntax": "all 7 scripts passed Microsoft PowerShell parser; ASCII/CRLF checked",
+    "windows_full_xaml_build": "not-tested",
+    "windows_exe_generated": false,
+    "windows_msi_generated": false,
+    "browser_input": "not-tested",
+    "core_tests_executed": 31,
+    "core_tests_passed": 31,
+    "pri_task_load_and_empty_input_probe": "passed on .NET SDK 8.0.426; not full Windows resource compilation",
+    "new_resource_configuration": {
+      "EnableCoreMrtTooling": false,
+      "EnableMsixTooling": true,
+      "WindowsPackageType": "None",
+      "AppxPackage": false,
+      "old_visual_studio_pri_task_used": false
+    },
+    "native_log_capture": "passed actual PowerShell host: UTF-8 stdout/stderr, spaced and quoted arguments, nonzero exit propagated",
+    "publish_wrapper_regression": "passed actual dotnet publish of Core through unchanged PowerShell wrapper with -v:minimal and binary/text logging; Windows WinUI publish still unverified",
+    "buildfix4_toolset_alignment": {
+      "reproduced_original_type_missing": true,
+      "mismatched_old_dll_new_targets_missing_types": 21,
+      "bundled_target_task_types_checked": 23,
+      "bundled_missing_types": 0,
+      "standalone_msix_tool_package_removed": true,
+      "project_restore_and_pri_preflight": "passed",
+      "full_windows_publish_after_fix4": "not-tested"
+    }
+  },
+  "windows_user_build_feedback": {
+    "date": "2026-10-18",
+    "os_build": "10.0.26300.0",
+    "sdk": "8.0.426",
+    "core_tests_passed": 31,
+    "native_structure_tests_passed": 1,
+    "publish_result_before_fix2": "failed MSB4062 ExpandPriContent; missing Visual Studio PRI task assembly",
+    "full_windows_publish_after_fix2": "not-tested"
+  },
+  "version_0_1_2": {
+    "scope": [
+      "MSI installation directory wizard",
+      "desktop shortcut",
+      "explicit Edge/Chrome selection"
+    ],
+    "baseline": "User confirmed FIX4 runs normally on Windows",
+    "typing_core_and_backend_source_unchanged": {
+      "src/PTA.CodeTyper.Core/CancellationControl.cs": "1ec6723eba86a3247ddc32a98515a562d55b37d66016e07ed74af9313794f5ef",
+      "src/PTA.CodeTyper.Core/ClipboardReader.cs": "bb5503e4ffd579c15d1a7ffc6bf7113e24bb88ef65eafff69d3d025f0e1a2069",
+      "src/PTA.CodeTyper.Core/Exceptions.cs": "85ec15fff67fc181875d3734e42190ebc4048dcfd317da22631bb4c519deca8e",
+      "src/PTA.CodeTyper.Core/IInputBackend.cs": "4861e4ada6d206ae0f17c98b3d63c4c46f3a120d3ee5b124e71e15e3b3cdb251",
+      "src/PTA.CodeTyper.Core/Options.cs": "7d7a4e1285ae7969378454526efbd4d890278431e59a55fd3b195556b60c5ac3",
+      "src/PTA.CodeTyper.Core/PTA.CodeTyper.Core.csproj": "eb7f937c0faf70032492558ef89d07257831afd9c36ad0601cebd654e611c8d4",
+      "src/PTA.CodeTyper.Core/ReportWriter.cs": "0e6cd960a522fdbafcbf9d6d62db73ca4ff9a43b45a8742010d2902f23908f5e",
+      "src/PTA.CodeTyper.Core/TextNormalizer.cs": "1bc5406718a497f8b8a4ea0dd05c7f08f9feb6383dcc7783074ecdd7d267e7ee",
+      "src/PTA.CodeTyper.Core/TypingEngine.cs": "9dedcd66564717e89dff85b6eb222602897594c088dd03d23f25a2d92b4f3ea4",
+      "src/PTA.CodeTyper.Windows/BrowserDetector.cs": "24833f47ec51dc4c7f5d29637b88b527dc44231e3e5ae9d1ea1ca805ec788ddb",
+      "src/PTA.CodeTyper.Windows/InputSender.cs": "5d7dc32b2f9f6dcb44dd7b7891f4c93e5141e44512a93cee0cd9da580437ea29",
+      "src/PTA.CodeTyper.Windows/NativeMethods.cs": "4cac0e10e0f82bf8f0b509270aa752ff16b9ed41122d4da9589f79c7b66a0d46",
+      "src/PTA.CodeTyper.Windows/PTA.CodeTyper.Windows.csproj": "e84656fd75713f4c53f2621394427cda0da2e508a33da716e3b9ab6e26393df3",
+      "src/PTA.CodeTyper.Windows/StopMonitor.cs": "6b4d3ba3b8d71ae774c56ee744f1a8f9b0a61e8111c45de826e97f88135aa2e7",
+      "src/PTA.CodeTyper.Windows/TargetGuard.cs": "07a0558895938232c59b38a443dc53b7e8374bbccc4f111f3e1eae334fdf90fa",
+      "src/PTA.CodeTyper.Windows/WindowsClipboard.cs": "fca9d7ca677d3fb4e09547bb59ba570d65ad74d475d71d2897afb2ac7526df4d",
+      "src/PTA.CodeTyper.Windows/WindowsInputBackend.cs": "48812226385604093908382a31c3bafb507c0272faf3fdde7ece66a5e7ef1b6b"
+    },
+    "default_browser": "edge",
+    "browser_choices": [
+      "edge",
+      "chrome"
+    ],
+    "installer_ui": "WixUI_InstallDir / zh-CN / WiX 5.0.2 UI extension",
+    "windows_new_msi_installation_test": "not-tested"
+  }
+}

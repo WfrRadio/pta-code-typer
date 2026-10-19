@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="PTA Code Typer" Manufacturer="PTA Code Typer contributors" Version="$(var.ProductVersion)" Scope="perUser" Language="2052" UpgradeCode="F8A1B2C3-D4E5-6789-ABCD-EF0123456789">
+    <SummaryInformation Description="PTA Code Typer for Windows 11 x64" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." Schedule="afterInstallInitialize" IgnoreLanguage="yes" />
+    <MediaTemplate EmbedCab="yes" />
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.LicenseRtf)" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="UserProgramsFolder" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="PTA Code Typer" />
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="PTAMenuFolder" Name="PTA Code Typer">
+        <Component Id="StartMenuShortcut" Guid="D546CECC-CFA0-4C66-8990-1246CB9756D9">
+          <Shortcut Id="ApplicationShortcut" Name="PTA Code Typer" Target="[INSTALLFOLDER]PTA Code Typer.exe" WorkingDirectory="INSTALLFOLDER" />
+          <RegistryValue Root="HKCU" Key="Software\PTA Code Typer\Installer" Name="Shortcut" Type="integer" Value="1" KeyPath="yes" />
+          <RemoveFolder Id="RemovePTAMenuFolder" On="uninstall" />
+          <RemoveFolder Id="RemoveUserProgramsFolder" Directory="UserProgramsFolder" On="uninstall" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="6AE1DC86-CE58-47D7-B981-756F17445C57">
+        <Shortcut Id="DesktopApplicationShortcut" Name="PTA Code Typer"
+                  Target="[INSTALLFOLDER]PTA Code Typer.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\PTA Code Typer\Installer"
+                       Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+    <Feature Id="ProductFeature" Title="PTA Code Typer" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="StartMenuShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+  </Package>
+</Wix>
